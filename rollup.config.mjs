@@ -1,9 +1,10 @@
 import vue from 'rollup-plugin-vue'
 import commonjs from "@rollup/plugin-commonjs"
 // import json from '@rollup/plugin-json'
-// import scss from 'rollup-plugin-scss'
+import scss from 'rollup-plugin-scss'
 // import sass from 'rollup-plugin-sass';
 import postcss from 'rollup-plugin-postcss';
+import postcssNamespace from 'postcss-selector-namespace';
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import { terser } from 'rollup-plugin-terser'
 // import css from 'rollup-plugin-css-only';
@@ -11,9 +12,8 @@ import { terser } from 'rollup-plugin-terser'
 import { babel as babelCore } from '@rollup/plugin-babel'
 import image from '@rollup/plugin-image';
 import url from 'rollup-plugin-url';
-
 export default {
-    input:'src/lib.js',
+    input:'src/lib.ts',
     // input:'src/main.js',
     output: {
         format: 'umd',
@@ -50,8 +50,17 @@ export default {
         ),
         commonjs(),
         terser(),
+        scss({ fileName: 'lib.css' }),
         postcss({
-            extract: true
+            extract: true,
+            plugins: [
+                postcssNamespace({
+                    namespace(css) {
+                        return '[data-testcomponent] ' + css.trim();
+                    },
+                }),
+            ],
+            extensions: ['.css', '.scss']
         }),
         image(),
         url({
