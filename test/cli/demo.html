@@ -1,0 +1,44 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Vue.js CDN</title>
+  <link rel="stylesheet" href="./mylib.css">
+</head>
+<body>
+<div id="app">
+  {{ message }}
+  <button @click="change">change</button>
+  <div>
+    <chok-button :msg="message"/>
+  </div>
+</div>
+<script src="https://unpkg.com/vue@3.2.28/dist/vue.global.js"></script>
+<script src="./mylib.umd.js"></script>
+<script>
+    const { createApp } = Vue
+
+    const app = createApp({
+        data() {
+            return{
+                message: 'Hello Vue!'
+            }
+        },
+        methods: {
+            change () {
+                this.message = 'Hello Vue Method!'
+            }
+        }
+    })
+
+    const components = window.mylib.default
+    const componentsNames = Object.keys(components)
+    if(componentsNames) {
+        for( let i of componentsNames){
+            app.component(i, components[i]);
+        }
+    }
+
+    app.mount('#app')
+</script>
+</body>
+</html>
